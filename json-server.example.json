@@ -1,0 +1,6 @@
+{
+    "port": 3333, 
+    "host": "[IP]",
+    "watch": true,
+    "delay": 750
+}

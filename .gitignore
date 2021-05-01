@@ -14,3 +14,7 @@ web-build/
 
 .env
 json-server.json
+
+.yarn-error.log
+.yarn.lock
+.expo-shared
