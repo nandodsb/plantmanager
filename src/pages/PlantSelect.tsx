@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import {
+    ScrollView,
     FlatList,
     StyleSheet,
     Text,
@@ -15,6 +16,7 @@ import { Load } from '../components/Load'
 import api from '../services/api'
 import colors from '../styles/colors'
 import fonts from '../styles/fonts'
+import { useNavigation } from '@react-navigation/native'
 
 interface IEnvironmentProps {
     key: string
@@ -42,7 +44,8 @@ export function PlantSelect() {
     const [loading, setLoading] = useState(true)
     const [page, setPage] = useState(1)
     const [loadingMore, setLoadingMore] = useState(false)
-    const [loadedAll, setLoadedAll] = useState(false)
+
+    const navigation = useNavigation()
 
     function handleEnvironmentSelected(environment: string) {
         setEnvironmentSelected(environment)
@@ -80,6 +83,10 @@ export function PlantSelect() {
         setLoadingMore(true)
         setPage((oldValue) => oldValue + 1)
         fetchPlants()
+    }
+
+    function handlePlantSelect(plant: IPlantProps) {
+        navigation.navigate('PlantSave', { plant })
     }
 
     useEffect(() => {
@@ -120,6 +127,7 @@ export function PlantSelect() {
             <View>
                 <FlatList
                     data={environments}
+                    keyExtractor={(item) => String(item.key)}
                     renderItem={({ item }) => (
                         <EnvironmentButton
                             title={item.title}
@@ -136,7 +144,13 @@ export function PlantSelect() {
             <View style={styles.plants}>
                 <FlatList
                     data={filteredPlants}
-                    renderItem={({ item }) => <PlantCardPrimary data={item} />}
+                    keyExtractor={(item) => String(item.id)}
+                    renderItem={({ item }) => (
+                        <PlantCardPrimary
+                            data={item}
+                            onPress={() => handlePlantSelect(item)}
+                        />
+                    )}
                     numColumns={2}
                     showsVerticalScrollIndicator={false}
                     onEndReachedThreshold={0.1}
@@ -186,7 +200,7 @@ const styles = StyleSheet.create({
         height: 40,
         justifyContent: 'center',
         paddingBottom: 5,
-        marginLeft: 32,
+        marginLeft: 34,
         marginVertical: 32,
     },
 
