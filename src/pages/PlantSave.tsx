@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
     Alert,
     StyleSheet,
@@ -10,57 +10,120 @@ import {
     Image,
 } from 'react-native'
 import { getBottomSpace } from 'react-native-iphone-x-helper'
-import { color } from 'react-native-reanimated'
+
 import { SvgFromUri } from 'react-native-svg'
 import { useRoute } from '@react-navigation/core'
-import waterdrop from '../assets/waterdrop.png'
+import DateTimePicker, { Event } from '@react-native-community/datetimepicker'
+import { format, isBefore } from 'date-fns'
+import { IPlantProps, savePlant } from '../libs/storage'
+
 import { Button } from '../components/Button'
+
 import colors from '../styles/colors'
 import fonts from '../styles/fonts'
+import waterdrop from '../assets/waterdrop.png'
+import { useNavigation } from '@react-navigation/native'
 
 interface IParams {
-    plant: {
-        id: string
-        name: string
-        about: string
-        water_tips: string
-        photo: string
-        environments: [string]
-        frequency: {
-            times: number
-            repeat_every: string
-        }
-    }
+    plant: IPlantProps
 }
 
 export function PlantSave() {
+    const navigation = useNavigation()
+
+    const [selectedDateTime, setSelectedDateTime] = useState(new Date())
+    const [showDatePicker, setShowDatePicker] = useState(Platform.OS === 'ios')
+
     const route = useRoute()
     const { plant } = route.params as IParams
 
+    function handleChangeTime(event: Event, dateTime: Date | undefined) {
+        if (Platform.OS === 'android') {
+            setShowDatePicker((oldState) => !oldState)
+        }
+
+        if (dateTime && isBefore(dateTime, new Date())) {
+            setSelectedDateTime(new Date())
+
+            return Alert.alert('Escolha uma hora no futuro! 🕐')
+        }
+
+        if (dateTime) setSelectedDateTime(dateTime)
+    }
+
+    function handleOpenDateTimePickerForAndroid() {
+        setShowDatePicker((oldState) => !oldState)
+    }
+
+    async function handleSave() {
+        try {
+            await savePlant({
+                ...plant,
+                dateTimeNotification: selectedDateTime,
+            })
+
+            navigation.navigate('Confirmation', {
+                title: 'Tudo certo',
+                subtitle:
+                    'Fique tranquilo que sempre vamos lembrar-te de cuidar da tua plantinha com muito cuidado',
+                buttonTitle: 'Muito Obrigado',
+                icon: 'hug',
+                nextScreen: 'MyPlants',
+            })
+        } catch {
+            return Alert.alert('Não foi possível salvar, 😥')
+        }
+    }
+
     return (
-        <View style={styles.container}>
-            <View style={styles.plantInfo}>
-                <SvgFromUri uri={plant.photo} height={150} width={150} />
+        <ScrollView
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.container}
+        >
+            <View style={styles.container}>
+                <View style={styles.plantInfo}>
+                    <SvgFromUri uri={plant.photo} height={150} width={150} />
 
-                <Text style={styles.plantName}>{plant.name}</Text>
+                    <Text style={styles.plantName}>{plant.name}</Text>
 
-                <Text style={styles.plantAbout}>{plant.about}</Text>
-            </View>
-
-            <View style={styles.controller}>
-                <View style={styles.tipContainer}>
-                    <Image source={waterdrop} style={styles.tipImage} />
-
-                    <Text style={styles.tipText}>{plant.water_tips}</Text>
+                    <Text style={styles.plantAbout}>{plant.about}</Text>
                 </View>
 
-                <Text style={styles.alertLabel}>
-                    Escolha o melhor horário para seres lembrado
-                </Text>
+                <View style={styles.controller}>
+                    <View style={styles.tipContainer}>
+                        <Image source={waterdrop} style={styles.tipImage} />
 
-                <Button title="Cadastrar planta" onPress={() => {}} />
+                        <Text style={styles.tipText}>{plant.water_tips}</Text>
+                    </View>
+
+                    <Text style={styles.alertLabel}>
+                        Escolha o melhor horário para seres lembrado
+                    </Text>
+
+                    {showDatePicker && (
+                        <DateTimePicker
+                            value={selectedDateTime}
+                            mode="time"
+                            display="default"
+                            onChange={handleChangeTime}
+                        />
+                    )}
+
+                    {Platform.OS === 'android' && (
+                        <TouchableOpacity
+                            style={styles.dateTimePickerButton}
+                            onPress={handleOpenDateTimePickerForAndroid}
+                        >
+                            <Text style={styles.dateTimePicker}>
+                                {`Mudar ${format(selectedDateTime, 'HH:mm')}`}
+                            </Text>
+                        </TouchableOpacity>
+                    )}
+
+                    <Button title="Cadastrar planta" onPress={handleSave} />
+                </View>
             </View>
-        </View>
+        </ScrollView>
     )
 }
 
@@ -100,6 +163,7 @@ const styles = StyleSheet.create({
         color: colors.heading,
         fontSize: 17,
         marginTop: 10,
+        marginBottom: 30,
     },
 
     tipContainer: {
@@ -123,7 +187,7 @@ const styles = StyleSheet.create({
         marginLeft: 20,
         fontFamily: fonts.text,
         color: colors.blue,
-        fontSize: 17,
+        fontSize: 14,
         textAlign: 'justify',
     },
 
@@ -133,5 +197,17 @@ const styles = StyleSheet.create({
         color: colors.heading,
         fontSize: 12,
         marginBottom: 5,
+    },
+
+    dateTimePickerButton: {
+        width: '100%',
+        alignItems: 'center',
+        paddingVertical: 20,
+    },
+
+    dateTimePicker: {
+        color: colors.heading,
+        fontSize: 16,
+        fontFamily: fonts.text,
     },
 })
