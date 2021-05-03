@@ -53,7 +53,7 @@ This project was developed with:
 ------------
 
 <h2>🎓 Developed by</h2>
-Happy was developed by <a href="https://github.com/diego3g">Diego Fernandes</a> from <a href="https://rocketseat.com.br/">Rocketseat</a> in the Next Level Week 5.0.
+Happy was developed by <a href="https://rocketseat.com.br/">Rocketseat</a> in the Next Level Week 5.0.
 
 ------------
 
