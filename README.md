@@ -1,6 +1,6 @@
 <h1 align="center">Next Level Week 5.0</h1>
 <p align="center">
-<img src="./assets/icon.png"/>
+<img src="./assets/adaptive-icon.png"/>
 
 
 
