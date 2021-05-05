@@ -10,10 +10,6 @@
 ![GitHub top language](https://img.shields.io/github/languages/count/Nandosbx/plantmanager?color=32B768&&style=for-the-badge&logo=appveyor)![GitHub top language](https://img.shields.io/github/languages/top/Nandosbx/plantmanager?color=32B768&&style=for-the-badge&logo=appveyor)![GitHub last commit](https://img.shields.io/github/last-commit/Nandosbx/plantmanager?color=32B768&&style=for-the-badge&logo=appveyor)![GitHub repo size](https://img.shields.io/github/repo-size/Nandosbx/plantmanager?color=32B768&&style=for-the-badge&logo=appveyor)![GitHub issues](https://img.shields.io/github/issues/Nandosbx/plantmanager?color=32B768&&style=for-the-badge&logo=appveyor)
 </div>
 
-<p align="center">
-<img src="./.github/"/>
-</p>
-
 
 ------------
 
@@ -60,7 +56,7 @@ Happy was developed by <a href="https://rocketseat.com.br/">Rocketseat</a> in th
 
 <h2>📃License</h2>
 
-This project is under MIT License. Access <a href="https://github.com/Nandosbx/podcastr-next/blob/master/LICENSE.md">License</a> and learn more.
+This project is under MIT License. Access <a href="https://github.com/Nandosbx/plantmanager/blob/master/LICENSE.md">License</a> and learn more.
 
 ------------
 
